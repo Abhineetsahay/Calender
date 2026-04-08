@@ -8,6 +8,7 @@ import CalendarGrid from "./CalendarGrid";
 import RangeInfo from "./RangeInfo";
 import NotesSection from "./NotesSection";
 import Footer from "./Footer";
+import Skeleton from "./Skeleton";
 
 const MONTHS = [
   "January",
@@ -165,6 +166,7 @@ export default function WallCalendar() {
   });
   const [noteInput, setNoteInput] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [flipping, setFlipping] = useState(false);
   const [flipDir, setFlipDir] = useState(1);
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -205,6 +207,12 @@ export default function WallCalendar() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  useEffect(() => {
+    // Show skeleton for 500ms on initial load
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   function navigate(dir: number) {
     setFlipDir(dir);
     setFlipping(true);
@@ -243,7 +251,16 @@ export default function WallCalendar() {
       setRangeEnd(null);
       setSelecting(true);
     } else {
-      setRangeEnd(d);
+      const num1 = dateToNum(rangeStart);
+      const num2 = dateToNum(d);
+      if (num1 && num2 && num1 < num2) {
+        setRangeEnd(d);
+      } else if (num1 && num2) {
+        setRangeEnd(rangeStart);
+        setRangeStart(d);
+      } else {
+        setRangeEnd(d);
+      }
       setSelecting(false);
       if (notesRef.current) notesRef.current.focus();
     }
@@ -294,10 +311,10 @@ export default function WallCalendar() {
     d ? HOLIDAYS[holidayKey(d) as keyof typeof HOLIDAYS] : undefined;
 
   return (
-    <div className="h-screen bg-linear-to-br from-amber-50 to-amber-100 flex items-center justify-center p-4">
-      <div className="w-full h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden relative">
+    <div className="h-screen bg-linear-to-br from-amber-50 to-amber-100 flex items-center justify-center p-2 md:p-4">
+      <div className={`w-full overflow-y-auto ${isMobile ? "h-auto max-h-[95vh]" : "h-[80vh]"} bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-2xl relative`}>
       
-        <div className={`flex ${isMobile ? "flex-col" : "flex-row"} mt-7`}>
+        <div className={`flex ${isMobile ? "flex-col " : "flex-row"} mt-7`}>
           <div className={`${isMobile ? "w-full h-56" : "w-1/2"} relative overflow-hidden shrink-0`}>
             <HeroImage
               src={MONTH_IMAGES[month]}
@@ -323,63 +340,69 @@ export default function WallCalendar() {
               }`}
             />
 
-            <Navigation
-              monthName={MONTHS[month]}
-              year={year}
-              onPrevious={() => navigate(-1)}
-              onNext={() => navigate(1)}
-              palette={palette}
-              isMobile={isMobile}
-            />
+            {isLoading || flipping ? (
+              <Skeleton />
+            ) : (
+              <>
+                <Navigation
+                  monthName={MONTHS[month]}
+                  year={year}
+                  onPrevious={() => navigate(-1)}
+                  onNext={() => navigate(1)}
+                  palette={palette}
+                  isMobile={isMobile}
+                />
 
-            <DayHeader days={DAYS} palette={palette} isMobile={isMobile} />
+                <DayHeader days={DAYS} palette={palette} isMobile={isMobile} />
 
-            <CalendarGrid
-              cells={cells}
-              year={year}
-              month={month}
-              rangeStart={rangeStart}
-              rangeEnd={rangeEnd}
-              showHoliday={showHoliday}
-              onDayClick={handleDayClick}
-              onHolidayMouseEnter={setShowHoliday}
-              onHolidayMouseLeave={() => setShowHoliday(null)}
-              palette={palette}
-              isMobile={isMobile}
-              isToday={isToday}
-              isWeekend={isWeekend}
-              isHoliday={isHoliday}
-              isSameDay={isSameDay}
-              inRange={inRange}
-            />
+                <CalendarGrid
+                  cells={cells}
+                  year={year}
+                  month={month}
+                  rangeStart={rangeStart}
+                  rangeEnd={rangeEnd}
+                  showHoliday={showHoliday}
+                  onDayClick={handleDayClick}
+                  onHolidayMouseEnter={setShowHoliday}
+                  onHolidayMouseLeave={() => setShowHoliday(null)}
+                  palette={palette}
+                  isMobile={isMobile}
+                  isToday={isToday}
+                  isWeekend={isWeekend}
+                  isHoliday={isHoliday}
+                  isSameDay={isSameDay}
+                  inRange={inRange}
+                />
 
-            <RangeInfo
-              rangeStart={rangeStart}
-              rangeEnd={rangeEnd}
-              selecting={selecting}
-              onClear={() => {
-                setRangeStart(null);
-                setRangeEnd(null);
-                setSelecting(false);
-              }}
-              formatDate={formatDate}
-              palette={palette}
-              isMobile={isMobile}
-            />
+                <RangeInfo
+                  rangeStart={rangeStart}
+                  rangeEnd={rangeEnd}
+                  selecting={selecting}
+                  onClear={() => {
+                    setRangeStart(null);
+                    setRangeEnd(null);
+                    setSelecting(false);
+                  }}
+                  formatDate={formatDate}
+                  palette={palette}
+                  isMobile={isMobile}
+                />
 
-            <NotesSection
-              noteKey={noteKey}
-              noteInput={noteInput}
-              onNoteInputChange={setNoteInput}
-              onSaveNote={saveNote}
-              onKeyDown={(e) => e.key === "Enter" && saveNote()}
-              notes={notes}
-              onDeleteNote={deleteNote}
-              allNoteKeys={allNoteKeys}
-              palette={palette}
-              isMobile={isMobile}
-              notesRef={notesRef}
-            />
+                <NotesSection
+                  noteKey={noteKey}
+                  noteInput={noteInput}
+                  onNoteInputChange={setNoteInput}
+                  onSaveNote={saveNote}
+                  onKeyDown={(e) => e.key === "Enter" && saveNote()}
+                  notes={notes}
+                  onDeleteNote={deleteNote}
+                  allNoteKeys={allNoteKeys}
+                  palette={palette}
+                  isMobile={isMobile}
+                  notesRef={notesRef}
+                />
+              </>
+            )}
           </div>
         </div>
 

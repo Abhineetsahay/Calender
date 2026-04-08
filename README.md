@@ -214,10 +214,5 @@ All data is stored **locally in your browser** using localStorage. No data is se
 - 📤 Share calendars
 - 🎯 Event categories
 
-## License
-
-MIT License - feel free to use this project for personal or commercial purposes.
-
----
 
 **Built with ❤️ using Next.js and Tailwind CSS**
