@@ -7,6 +7,7 @@ interface NavigationProps {
   year: number;
   onPrevious: () => void;
   onNext: () => void;
+  onMonthYearClick: () => void;
   palette: { bg: string; accent: string; light: string; text: string };
   isMobile: boolean;
 }
@@ -16,6 +17,7 @@ export default function Navigation({
   year,
   onPrevious,
   onNext,
+  onMonthYearClick,
   palette,
   isMobile,
 }: NavigationProps) {
@@ -39,15 +41,27 @@ export default function Navigation({
         <span className="text-2xl">◀</span>
       </button>
 
-      <span
-        className={`font-semibold tracking-wider text-center w-44 ${isMobile ? "text-sm" : "text-lg"}`}
+      <button
+        onClick={onMonthYearClick}
+        className={`font-semibold tracking-wider text-center w-44 px-3 py-2 rounded-lg transition-all duration-200 ${isMobile ? "text-sm" : "text-lg"}`}
         style={{ 
           color: palette.text,
           textShadow: `0 2px 4px rgba(0,0,0,0.05)`,
+          backgroundColor: palette.light,
+          border: `2px solid ${palette.accent}`,
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = palette.accent;
+          e.currentTarget.style.color = "#fff";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = palette.light;
+          e.currentTarget.style.color = palette.text;
         }}
       >
         {monthName.toUpperCase()} {year}
-      </span>
+      </button>
 
       <button
         onClick={onNext}

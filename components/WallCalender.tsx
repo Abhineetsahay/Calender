@@ -9,6 +9,7 @@ import RangeInfo from "./RangeInfo";
 import NotesSection from "./NotesSection";
 import Footer from "./Footer";
 import Skeleton from "./Skeleton";
+import MonthYearPicker from "./MonthYearPicker";
 
 const MONTHS = [
   "January",
@@ -171,6 +172,7 @@ export default function WallCalendar() {
   const [flipDir, setFlipDir] = useState(1);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [showHoliday, setShowHoliday] = useState<string | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const notesRef = useRef<HTMLInputElement>(null);
 
   const palette = PALETTE[month];
@@ -241,6 +243,26 @@ export default function WallCalendar() {
       setSelecting(false);
       setImgLoaded(false);
       setFlipping(false);
+    }, 350);
+  }
+
+  function handleMonthYearSelect(newMonth: number, newYear: number) {
+    if (newMonth === month && newYear === year) {
+      setShowPicker(false);
+      return;
+    }
+
+    setFlipDir(newYear > year ? 1 : newYear < year ? -1 : newMonth > month ? 1 : -1);
+    setFlipping(true);
+    setTimeout(() => {
+      setMonth(newMonth);
+      setYear(newYear);
+      setRangeStart(null);
+      setRangeEnd(null);
+      setSelecting(false);
+      setImgLoaded(false);
+      setFlipping(false);
+      setShowPicker(false);
     }, 350);
   }
 
@@ -349,6 +371,7 @@ export default function WallCalendar() {
                   year={year}
                   onPrevious={() => navigate(-1)}
                   onNext={() => navigate(1)}
+                  onMonthYearClick={() => setShowPicker(true)}
                   palette={palette}
                   isMobile={isMobile}
                 />
@@ -413,6 +436,17 @@ export default function WallCalendar() {
           dateToNum={dateToNum}
           palette={palette}
         />
+
+        {showPicker && (
+          <MonthYearPicker
+            year={year}
+            month={month}
+            onSelect={handleMonthYearSelect}
+            onClose={() => setShowPicker(false)}
+            palette={palette}
+            isMobile={isMobile}
+          />
+        )}
       </div>
     </div>
   );

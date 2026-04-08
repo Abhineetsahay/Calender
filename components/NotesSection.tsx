@@ -12,6 +12,14 @@ interface NotesSectionProps {
   notesRef: React.RefObject<HTMLInputElement | null>;
 }
 
+interface NoteItem {
+  key: string;
+  note: string;
+  idx: number;
+  date: Date;
+  isCurrentSelection: boolean;
+}
+
 export default function NotesSection({
   noteKey,
   noteInput,
@@ -25,7 +33,7 @@ export default function NotesSection({
   isMobile,
   notesRef,
 }: NotesSectionProps) {
-  // Parse date strings and sort by which happens first
+    
   const parseDate = (dateStr: string): Date => {
     const parts = dateStr.split("/");
     if (parts.length === 3) {
@@ -54,7 +62,6 @@ export default function NotesSection({
     return dateB.getTime() - dateA.getTime();
   });
 
-  // Collect all notes with their dates
   const allNotesWithDates = sortedNoteKeys
     .flatMap((k) => {
       const notesList = notes[k] || [];
@@ -145,7 +152,7 @@ export default function NotesSection({
       </div>
       <div style={{ maxHeight: isMobile ? 100 : 140, overflowY: "auto" }}>
         {allNotesWithDates.length > 0 ? (
-          allNotesWithDates.map((item: any, i: number) => (
+          allNotesWithDates.map((item: NoteItem) => (
             <div
               key={`${item.key}-${item.idx}`}
               style={{
