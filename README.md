@@ -204,15 +204,5 @@ npm start
 
 All data is stored **locally in your browser** using localStorage. No data is sent to any server.
 
-## Future Enhancements
-
-- 📤 Export calendar data as JSON/PDF
-- ☁️ Cloud sync with Firebase
-- 🔄 Recurring events
-- 🔔 Event reminders
-- 🌙 Dark mode
-- 📤 Share calendars
-- 🎯 Event categories
-
 
 **Built with ❤️ using Next.js and Tailwind CSS**
