@@ -1,36 +1,223 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wall Calendar App
+
+A modern, interactive wall calendar built with Next.js, React, and Tailwind CSS. Features a beautiful spiral-bound design with date range selection, note management, and holiday indicators.
+
+## Features
+
+✨ **Interactive Calendar**
+- Navigate through months and years with smooth flip animations
+- View holidays for each date
+- Today indicator highlighting current date
+- Weekend highlighting
+
+📅 **Date Range Selection**
+- Select date ranges by clicking start and end dates
+- Visual range highlighting on calendar
+- Clear range selection with one click
+
+📝 **Note Management**
+- Add notes to specific dates or date ranges
+- View all notes for the current month
+- Delete individual notes
+- Notes automatically saved to browser localStorage
+
+🎨 **Beautiful UI**
+- Spiral binding design element
+- Color-coded months with dynamic palettes
+- Responsive design (mobile & desktop)
+- Smooth animations and transitions
+- System fonts for optimal performance
+
+💾 **Data Persistence**
+- Automatically saves state to localStorage:
+  - Current year and month
+  - Selected date ranges
+  - All notes
+- Data persists across browser sessions
+
+📱 **Responsive Design**
+- Optimized for desktop and mobile devices
+- Adaptive layouts and font sizes
+- Touch-friendly interface
+
+## Tech Stack
+
+- **Framework**: Next.js 13+ with React 19
+- **Styling**: Tailwind CSS v4
+- **Language**: TypeScript
+- **Build Tool**: Next.js built-in tools
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd calendar
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+### Navigation
+- Click **Previous** (◀) or **Next** (▶) buttons to navigate between months
+- Year automatically advances/decreases when moving between months
+- Smooth flip animation on month transition
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Date Selection
+1. Click a date to start range selection
+2. Click another date to complete the range
+3. Selected dates highlight in the calendar color
+4. Click "Clear" to reset the selection
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Adding Notes
+1. Select a date or date range (optional)
+2. Type your note in the input field
+3. Press Enter or click the save button
+4. Note appears in the "Notes" section
 
-## Deploy on Vercel
+### Viewing Notes
+- **Current Month**: Shows notes for the current viewing month
+- **Date Range**: Shows notes for specific date ranges
+- Click delete icon (🗑️) to remove a note
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Holiday Information
+- Hover over dates with holiday indicators to view holiday name
+- Includes major Indian holidays and international observances
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## File Structure
+
+```
+calendar/
+├── app/
+│   ├── globals.css          # Global styles and Tailwind directives
+│   ├── layout.tsx           # Root layout
+│   └── page.tsx             # Home page
+├── components/
+│   ├── WallCalender.tsx     # Main calendar component
+│   ├── HeroImage.tsx        # Month image hero section
+│   ├── Navigation.tsx       # Month/year navigation
+│   ├── DayHeader.tsx        # Day abbreviations (Mon-Sun)
+│   ├── DateCell.tsx         # Individual date cell
+│   ├── CalendarGrid.tsx     # Calendar grid layout
+│   ├── RangeInfo.tsx        # Date range display
+│   ├── NotesSection.tsx     # Notes management
+│   └── Footer.tsx           # Footer info
+├── public/                  # Static assets
+└── package.json             # Dependencies
+```
+
+## Key Components
+
+### WallCalender.tsx (Main)
+- Orchestrates all state management
+- Handles date calculations
+- Manages localStorage persistence
+- Contains holiday definitions and color palettes
+
+### Sub-Components
+- **Navigation**: Month/year navigation controls
+- **CalendarGrid**: 7-column grid layout for dates
+- **DateCell**: Individual date cells with holiday indicators
+- **NotesSection**: Note input and display
+- **RangeInfo**: Shows selected date range
+- **Footer**: Additional calendar statistics
+
+## State Management
+
+The calendar uses React hooks with localStorage persistence:
+
+```typescript
+// Persisted state (loads from localStorage on mount)
+- year
+- month
+- rangeStart
+- rangeEnd
+- notes
+
+// Non-persisted state
+- noteInput
+- selecting
+- isMobile
+- flipping
+- showHoliday
+```
+
+All persisted state uses lazy initializers to load from localStorage on mount.
+
+## Styling
+
+The project uses **Tailwind CSS** for styling with a custom color palette system:
+
+- 12 color schemes (one per month)
+- Each palette includes: background, accent, light, and text colors
+- Responsive utilities for mobile/desktop
+- Smooth transitions and animations
+
+### Font Stack
+System fonts for instant rendering:
+- Segoe UI
+- -apple-system
+- BlinkMacSystemFont
+- SF Pro Display
+- Helvetica Neue
+
+## Holidays
+
+The calendar includes major holidays:
+- New Year's Day
+- Republic Day
+- Women's Day
+- Holi, Dussehra, Diwali
+- Independence Day
+- Gandhi Jayanti
+- Christmas
+- And more...
+
+## Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+## Browser Support
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Mobile browsers
+
+## Data Privacy
+
+All data is stored **locally in your browser** using localStorage. No data is sent to any server.
+
+## Future Enhancements
+
+- 📤 Export calendar data as JSON/PDF
+- ☁️ Cloud sync with Firebase
+- 🔄 Recurring events
+- 🔔 Event reminders
+- 🌙 Dark mode
+- 📤 Share calendars
+- 🎯 Event categories
+
+## License
+
+MIT License - feel free to use this project for personal or commercial purposes.
+
+---
+
+**Built with ❤️ using Next.js and Tailwind CSS**
